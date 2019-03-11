@@ -6,7 +6,11 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "outFile": "./dist/app.min.js",
-    "sourceMap": false
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true
   },
   "include": [
     "./src/app/**/*"
