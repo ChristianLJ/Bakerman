@@ -22,7 +22,6 @@ module.exports = function run(baseDir, mode) {
             if (webpackMode === "production") {
                 minimizerPlugins.push(new TerserPlugin({
                     exclude: /node_modules/,
-                    test: /\.tsx?$/,
                     parallel: true,
                     sourceMap: false, // Must be set to true if using source-maps in production
                     terserOptions: {
