@@ -21,7 +21,8 @@ module.exports = function run(baseDir, mode) {
             const minimizerPlugins = [];
             if (webpackMode === "production") {
                 minimizerPlugins.push(new TerserPlugin({
-                    sourceMap: true, // Must be set to true if using source-maps in production
+                    parallel: true,
+                    sourceMap: false, // Must be set to true if using source-maps in production
                     terserOptions: {
                         compress: {
                             drop_console: true,
