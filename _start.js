@@ -10,6 +10,17 @@ let isServerCreated = false;
 exports.build = function (isUpdating, mode) {
     isUpdating = false; //OVERRIDE
 
+    console.log(
+        "______  ___   _   __ ______________  ___  ___   _   _ \n" +
+        "| ___ \\/ _ \\ | | / /|  ___| ___ \\  \\/  | / _ \\ | \\ | |\n" +
+        "| |_/ / /_\\ \\| |/ / | |__ | |_/ / .  . |/ /_\\ \\|  \\| |\n" +
+        "| ___ \\  _  ||    \\ |  __||    /| |\\/| ||  _  || . ` |\n" +
+        "| |_/ / | | || |\\  \\| |___| |\\ \\| |  | || | | || |\\  |\n" +
+        "\\____/\\_| |_/\\_| \\_/\\____/\\_| \\_\\_|  |_/\\_| |_/\\_| \\_/\n" +
+        "                                                      \n" +
+        "");
+
+
     l.info("Running build");
 
     const startTime = new Date().getMilliseconds();
