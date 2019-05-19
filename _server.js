@@ -40,8 +40,8 @@ const isRunning = (query) => {
         default:
             break;
     }
-    const stdout = spawnSync(cmd);
-    return stdout.toLowerCase().indexOf(query.toLowerCase()) > -1;
+    const child = spawnSync(cmd);
+    return child.output.toString("utf8").indexOf(query) > -1;
 };
 
 exports.serve = function () {
@@ -51,7 +51,7 @@ exports.serve = function () {
         const port = Bakerman.getApachePort();
         const url = 'http://localhost:' + port;
         const start = (process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open');
-        spawn(start + ' ' + url);
+        exec(start + ' ' + url);
 
         getApachePath().then(apachePath => {
             const distPath = path.resolve("./dist");
@@ -67,7 +67,7 @@ exports.serve = function () {
 
             const cmd = apachePath + ' -f "' + configPath + '"';
 
-            spawn(cmd, (err, stdout, stderr) => {
+            exec(cmd, (err, stdout, stderr) => {
                 if (err) {
                     l.error(err);
                 }
