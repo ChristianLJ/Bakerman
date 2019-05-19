@@ -1,10 +1,11 @@
 const log = require("./scripts/utils/log");
 const l = log.withContext("start");
 const exec = require('child_process').exec;
+const spawnSync = require('child_process').spawnSync;
+const spawn = require('child_process').spawn;
 const path = require('path');
 const fs = require("fs");
 const Bakerman = require("./scripts/utils/Bakerman");
-let isApacheStarted = false;
 
 function getApachePath() {
     const xamppPath = "C:\\xampp\\apache\\bin\\httpd.exe";
@@ -23,16 +24,34 @@ function getApachePath() {
     });
 }
 
-exports.serve = function () {
-    setTimeout(() => {
-        l.log("Starting server");
+const isRunning = (query) => {
+    let platform = process.platform;
+    let cmd = '';
+    switch (platform) {
+        case 'win32' :
+            cmd = `tasklist`;
+            break;
+        case 'darwin' :
+            cmd = `ps -ax | grep ${query}`;
+            break;
+        case 'linux' :
+            cmd = `ps -A`;
+            break;
+        default:
+            break;
+    }
+    const stdout = spawnSync(cmd);
+    return stdout.toLowerCase().indexOf(query.toLowerCase()) > -1;
+};
 
-        //exec("taskkill /f /im node.exe");
+exports.serve = function () {
+    if (!isRunning('httpd.exe')) {
+        l.log("Starting server");
 
         const port = Bakerman.getApachePort();
         const url = 'http://localhost:' + port;
-        const start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open');
-        exec(start + ' ' + url);
+        const start = (process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open');
+        spawn(start + ' ' + url);
 
         getApachePath().then(apachePath => {
             const distPath = path.resolve("./dist");
@@ -48,19 +67,15 @@ exports.serve = function () {
 
             const cmd = apachePath + ' -f "' + configPath + '"';
 
-            if(!isApacheStarted) {
-                exec(cmd, (err, stdout, stderr) => {
-                    if (err) {
-                        l.error(err);
-                    }
+            spawn(cmd, (err, stdout, stderr) => {
+                if (err) {
+                    l.error(err);
+                }
 
-                    l.info(stderr);
-                    l.info(stdout);
-                });
-
-                isApacheStarted = true;
-            }
+                l.info(stderr);
+                l.info(stdout);
+            });
         });
-    }, 1000);
+    }
 };
 

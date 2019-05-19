@@ -1,6 +1,6 @@
 {
   "name": "bakerman",
-  "version": "0.0.72",
+  "version": "0.0.73",
   "description": "",
   "scripts": {
     "deploy": "npm publish"
