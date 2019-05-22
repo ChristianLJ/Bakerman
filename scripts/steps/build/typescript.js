@@ -45,11 +45,6 @@ module.exports = function run(baseDir, mode) {
                         ],
                     },
                     plugins: [
-                        new webpack.ProvidePlugin({
-                            $: 'jquery',
-                            jQuery: 'jquery',
-                            'window.jQuery': 'jquery'
-                        }),
                         new webpack.optimize.LimitChunkCountPlugin({
                             maxChunks: 1,
                         }),
