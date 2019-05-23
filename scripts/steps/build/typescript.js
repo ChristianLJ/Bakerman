@@ -5,6 +5,7 @@ const getBuildVars = require("../../utils/get-build-vars");
 const webpack = require("webpack");
 const path = require("path");
 const TerserPlugin = require('terser-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 /**
  * @param {string} baseDir
@@ -18,9 +19,9 @@ module.exports = function run(baseDir, mode) {
 
             const webpackMode = mode === "DEV" ? "development" : "production";
 
-            const minimizerPlugins = [];
+            const productionPlugins = [];
             if (webpackMode === "production") {
-                minimizerPlugins.push(new TerserPlugin({
+                /*minimizerPlugins.push(new TerserPlugin({
                     exclude: /node_modules/,
                     parallel: true,
                     sourceMap: false, // Must be set to true if using source-maps in production
@@ -29,7 +30,8 @@ module.exports = function run(baseDir, mode) {
                             drop_console: true,
                         },
                     },
-                }),);
+                }),);*/
+                productionPlugins.push(new BundleAnalyzerPlugin());
             }
 
             const compiler = webpack({
@@ -48,20 +50,18 @@ module.exports = function run(baseDir, mode) {
                         new webpack.optimize.LimitChunkCountPlugin({
                             maxChunks: 1,
                         }),
-                    ],
+                    ].concat(productionPlugins),
                     resolve: {
                         modules: [
                             "node_modules",
                             path.resolve(__dirname, "./src/app")
                         ],
-                        extensions: ['.tsx', '.ts', '.js']
+                        extensions: ['.js', '.jsx', '.tsx', '.ts', '.json']
                     },
                     output: {
                         filename: 'app.min.js',
                         path: path.resolve('./dist')
-                    }, optimization: {
-                        minimizer: minimizerPlugins,
-                    },
+                    }
                 }
             );
 
