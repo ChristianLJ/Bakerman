@@ -1,22 +1,17 @@
-const l = require("../../utils/log").withContext("typescript");
 const fs = require("fs");
 const hash = require("../../utils/hash");
 const getBuildVars = require("../../utils/get-build-vars");
 const webpack = require("webpack");
 const path = require("path");
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const Log = require("../../../Log/Log");
 
-/**
- * @param {string} baseDir
- * @param {string} relativeFile
- * @returns {{run: () => Promise }}
- */
 module.exports = function run(baseDir, mode, firstRun) {
     return {
         run() {
-            l.info("Starting typescript compilation process in mode: " + mode);
-
             const webpackMode = mode === "DEV" ? "development" : "production";
+
+            Log.info("Transpiling code base using Webpack in " + webpackMode + " mode.");
 
             const productionPlugins = [];
             if (webpackMode === "production") {
@@ -67,7 +62,7 @@ module.exports = function run(baseDir, mode, firstRun) {
             return new Promise((resolve, reject) => {
                 compiler.run(function (err, stats) {
                     if (err || stats.hasErrors()) {
-                        l.error(JSON.stringify(stats.toJson()));
+                        Log.error(JSON.stringify(stats.toJson()));
                         reject(err);
                         return;
                     }
@@ -76,16 +71,13 @@ module.exports = function run(baseDir, mode, firstRun) {
                     const file = typescript.in;
                     const outFile = typescript.out;
 
-                    l.info(`Input: ${file}`);
-                    l.info(`Output: ${outFile}`);
-
                     new Promise((resolve1, reject1) => {
                         hash.sha256file(file).then(hash => {
                             fs.readdir("./dist", function (error, files) {
                                 if (error) {
                                     reject(error);
                                 }
-                                resolve("");
+                                resolve();
 
                             });
                         });

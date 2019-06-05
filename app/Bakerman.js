@@ -9,6 +9,7 @@ const minifyImages = require("./@core/legacy/steps/build/minify_images");
 const Pipeline = require("./@core/legacy/pipeline");
 const Environment = require('./@core/Environment');
 const Server = require('./@core/Server');
+const Terminal = require('./@core/Terminal/Terminal');
 const Log = require('./@core/Log/Log');
 const gaze = require("gaze");
 
@@ -16,9 +17,13 @@ let firstRun = true;
 
 class Bakerman {
     run() {
+        Terminal.showLogo();
+
         if (Environment.getMode() === "PROD") {
+            Log.info("Starting build process for production.");
             this.buildProd();
         } else {
+            Log.info("Starting server in development mode.");
             this.buildDevAndWatch();
         }
     }
@@ -54,7 +59,6 @@ class Bakerman {
     }
 
     watch() {
-        Log.info("watching files");
         //TODO: get path from config
         const configPath = path.resolve(process.cwd(), "src");
 
@@ -66,7 +70,8 @@ class Bakerman {
             }
 
             watcher.on('all', (event, filepath) => {
-                l.info(filepath + ' was ' + event);
+                console.log("");
+
                 this.build();
             });
         });

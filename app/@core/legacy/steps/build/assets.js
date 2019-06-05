@@ -1,10 +1,10 @@
 const {resolve} = require("path");
-const l = require("../../utils/log").withContext("assets");
 const {sha256file} = require("../../utils/hash");
 const rename = require("../../commands/rename");
 const getBuildVars = require("../../utils/get-build-vars");
 const {getAssetDistFiles, getStyleDistFiles, getHtmlDistFiles, getJavascriptDistFiles} = require("../../utils/list-files");
 const {replaceInFile} = require("../../utils/replace-in-file");
+const Log = require("../../../Log/Log");
 
 /**
  *
@@ -194,15 +194,13 @@ module.exports = function run(baseDir, mode, firstRun) {
             const dist = getBuildVars().general.distFolder;
 
             const distFolder = resolve(baseDir, dist);
-            l.info("Starting assets process with dist folder:");
-            l.info(distFolder);
-
             if (mode === "DEV") {
                 return new Promise((resolve, reject) => {
                     resolve("");
-                    return;
                 });
             }
+
+            Log.info("Hashing all assets and replacing entries in project files.");
 
             return getAssetDistFiles().then(assets => {
                 return calculateFileHashes(assets, ["css"])

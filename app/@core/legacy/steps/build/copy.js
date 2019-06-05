@@ -1,12 +1,8 @@
-const l = require("../../utils/log").withContext("copy");
 const getBuildVars = require("../../utils/get-build-vars");
 const ncp = require('ncp').ncp;
 const path = require("path");
+const Log = require("../../../Log/Log");
 
-/**
- * @param {string} baseDir
- * @returns {{run: () => Promise }}
- */
 module.exports = function run(baseDir, mode, firstRun) {
     return {
         run() {
@@ -22,16 +18,14 @@ module.exports = function run(baseDir, mode, firstRun) {
                 const source = path.resolve(baseDir, config.source);
                 const target = path.resolve(baseDir, config.distribution);
 
-                l.info("Starting copy process");
-                l.info(`Source: ${source}`);
-                l.info(`Target: ${target}`);
+                Log.info("Copying assets to ./dist folder.");
 
                 ncp(source, target, {filter: filter}, function (err) {
                     if (err) {
                         reject(err);
                     }
 
-                    resolve("Successfully renamed file");
+                    resolve();
                 });
             });
         }

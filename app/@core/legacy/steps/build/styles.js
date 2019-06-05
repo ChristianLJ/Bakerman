@@ -1,6 +1,6 @@
 const sass = require("node-sass");
 const {resolve} = require("path");
-const l = require("../../utils/log").withContext("styles");
+const Log = require("../../../Log/Log");
 const write = require("../../commands/write");
 const getBuildVars = require("../../utils/get-build-vars");
 
@@ -12,18 +12,16 @@ const getBuildVars = require("../../utils/get-build-vars");
 module.exports = function run(baseDir, mode, firstRun) {
     return {
         run() {
-            l.info("Starting styles compilation process in mode: " + mode);
-
             const styles = getBuildVars().general.stylesheet;
 
             const file = resolve(baseDir, styles.in);
             const outFile = resolve(baseDir, styles.out);
 
             return new Promise((resolve, reject) => {
-                l.info(`Input: ${file}`);
-                l.info(`Output: ${outFile}`);
 
                 if (mode === "DEV") {
+                    Log.info("Minifying and compiling .scss to .css in development mode with source maps.");
+
                     sass.render(
                         {
                             file,
@@ -40,6 +38,8 @@ module.exports = function run(baseDir, mode, firstRun) {
                         }
                     );
                 } else {
+                    Log.info("Minifying and compiling .scss to .css in production mode.");
+
                     sass.render(
                         {
                             file,

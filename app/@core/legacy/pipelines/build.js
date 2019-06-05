@@ -13,8 +13,6 @@ const Pipeline = require("../pipeline");
  * @returns {{run: () => Promise<any>}}
  */
 module.exports.createBuildPipeline = function createBuildPipeline(baseDir, isUpdating, mode) {
-    l.info("Creating build pipeline");
-
     return new Pipeline()
         .withStep(prepare(baseDir, isUpdating, mode))
         .withStep(copy(baseDir, isUpdating))

@@ -1,6 +1,6 @@
-const l = require("../../utils/log").withContext("prepare");
 const getBuildVars = require("../../utils/get-build-vars");
 const rimraf = require("rimraf");
+const Log = require("../../../Log/Log");
 
 module.exports = function run(baseDir, mode, firstRun) {
     return {
@@ -12,9 +12,9 @@ module.exports = function run(baseDir, mode, firstRun) {
                     return;
                 }
 
-                l.info("Starting pre-build process");
-
                 const config = getBuildVars();
+
+                Log.info("Removing old ./dist folder.");
 
                 for (const folder of config.prepare.deleteFolders) {
                     rimraf(folder, function () {

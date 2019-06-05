@@ -23,7 +23,6 @@ function replaceInData(data, keyValueMap) {
                         const regex = new RegExp(kv.key, "g");
                         const matches = result.match(regex);
                         if (matches && matches.length > 0) {
-                            l.info(`Found ${matches.length} matches of "${kv.key}"`);
                         }
 
                         return result.replace(regex, kv.value);

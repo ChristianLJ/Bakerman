@@ -1,15 +1,9 @@
 const fs = require("fs");
 const glob = require("glob");
-const l = require("../../utils/log").withContext("minify-images");
 const sharp = require('sharp');
 const path = require("path");
 const getBuildVars = require("../../utils/get-build-vars");
-
-/**
- * @param {string} baseDir
- * @param {string} relativeFile
- * @returns {{run: () => Promise }}
- */
+const Log = require("../../../Log/Log");
 
 function minifyImage(file, mode, firstRun) {
     const image = fs.readFileSync(file);
@@ -28,8 +22,7 @@ function minifyImage(file, mode, firstRun) {
 
                 fs.writeFileSync(file, buffer);
 
-                l.info("Minified and saved image: " + file);
-                resolve("Saved image: " + file);
+                resolve();
             });
     });
 }
@@ -46,7 +39,6 @@ function createWebP(file, mode) {
 
             const skipWebP = fs.existsSync(path.normalize(newFileName));
             if (skipWebP) {
-                l.info("skipping webp, it exists: " + newFileName);
                 resolve("skipping webp, it exists");
             } else {
                 sharp(image)
@@ -58,7 +50,6 @@ function createWebP(file, mode) {
 
                         fs.writeFileSync(newFileName, buffer);
 
-                        l.info("Minified and saved image as webp: " + newFileName);
                         resolve("Saved image: " + newFileName);
                     });
             }
@@ -79,12 +70,11 @@ function resolveAllImages(imagePromises, resolve, reject) {
 module.exports = function run(baseDir, mode, firstRun) {
     return {
         run() {
+            Log.info("Minifying images and creating webP.");
+
             return new Promise((resolve, reject) => {
                 try {
-                    l.info("Minifying images");
                     const directory = path.join(baseDir + "/dist/**/*.jpg");
-
-                    l.info("Directory: " + directory);
 
                     glob(directory, {}, function (er, files) {
                         const imagePromises = [];

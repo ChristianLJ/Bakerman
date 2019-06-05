@@ -14,10 +14,6 @@ module.exports = function rename(source, target) {
         });
     }
 
-    l.info("Renaming");
-    l.info(`Source: ${source}`);
-    l.info(`Target: ${target}`);
-
     return new Promise((resolve, reject) => {
         fs.rename(source, target, (err) => {
             if (err) {

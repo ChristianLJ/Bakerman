@@ -1,5 +1,5 @@
-const l = require("./utils/log").withContext("pipeline");
 const Environment = require('../Environment');
+const Log = require("../Log/Log");
 
 function runSteps(steps) {
     if (steps.length === 0) {
@@ -24,14 +24,16 @@ class Pipeline {
 
     run() {
         const start = new Date().getTime();
-        l.info("Start");
 
         return runSteps(this.steps).then(() => {
-                l.log(`Finished. Elapsed time: ${new Date().getTime() - start} ms`);
                 if (Environment.getMode() === "PROD") {
+                    Log.alert(`Finished build for production. Elapsed time: ${new Date().getTime() - start} ms.`);
+
                     setTimeout(() => {
                         process.exit(0);
                     }, 1000);
+                } else {
+                    Log.alert(`Built in: ${new Date().getTime() - start}ms.`);
                 }
             }
         );

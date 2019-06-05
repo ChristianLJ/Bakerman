@@ -11,9 +11,6 @@ const prettySize = require("../utils/pretty-size");
 module.exports = function write(target, data) {
   const size = prettySize(data);
 
-  l.info(`Write to:`);
-  l.info(target);
-
   return new Promise((resolve, reject) => {
     
     
@@ -32,5 +29,5 @@ module.exports = function write(target, data) {
         }
       }
     );
-  }).then(() => l.info(`Wrote ${size} to ${target}`));
+  });
 };

@@ -8,8 +8,6 @@ const fs = require('fs-extra');
  */
 module.exports = function rm(target, recursively, mode) {
     if (mode === "PROD") {
-        l.info("Deleting");
-        l.info(target);
 
         if (target.includes("*")) {
             return Promise.reject(
@@ -23,7 +21,6 @@ module.exports = function rm(target, recursively, mode) {
 
         fs.removeSync(target);
     } else {
-        l.info("Skipping deletion since we're in DEV MODE!");
-        return true;
+        return;
     }
 };

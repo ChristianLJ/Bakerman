@@ -5,6 +5,7 @@ const spawn = require('child_process').spawn;
 const path = require('path');
 const fs = require("fs");
 const getBuildVars = require("./legacy/utils/get-build-vars");
+const Log = require("./Log/Log");
 
 class Server {
     getServerExecutablePath() {
@@ -21,8 +22,6 @@ class Server {
     }
 
     serve() {
-        l.log("Starting server");
-
         const port = getBuildVars().config.port;
 
         this.getServerExecutablePath().then(serverExecutablePath => {
@@ -45,13 +44,12 @@ class Server {
                     stdio: "inherit",
                 });
 
+                Log.info("Server running at http://localhost:3000");
+
                 exec('npx browser-sync start --proxy "localhost:7900" --files ' + distPath + '/**/*', (err, stdout, stderr) => {
                     if (err) {
                         l.error(err);
                     }
-
-                    l.info(stderr);
-                    l.info(stdout);
                 });
             }, 2500);
         });

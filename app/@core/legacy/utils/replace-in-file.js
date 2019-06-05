@@ -18,8 +18,6 @@ function replaceInFile(target, keyValueMap) {
         }
     }
 
-    l.info(`Replacing values in: ${basename(target)}`);
-
     return read(target)
         .then(data => {
             return replaceInData(data, keyValueMap)

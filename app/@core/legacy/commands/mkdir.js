@@ -7,9 +7,6 @@ const fs = require("fs");
  * @returns {Promise}
  */
 module.exports = function mkdir(path) {
-  l.info("Creating folder");
-  l.info(path);
-
     if(fs.existsSync(path)) {
 	  return false;
   }

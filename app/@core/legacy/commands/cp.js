@@ -18,16 +18,9 @@ module.exports = function cp(firstRun, baseDir, source, target) {
     source = resolve(baseDir, source);
     target = resolve(baseDir, target);
 
-    l.info(`Copying...`);
-    l.info(`Source: ${source}`);
-    l.info(`Target: ${target}`);
-
     return new Promise((resolve, reject) => {
-        console.log(1)
         ncp(source, target, {filter: filter}, function (err) {
-            console.log(2)
             if (err) {
-                console.log(3)
                 reject(err);
             }
             console.log("Successfully renamed file")

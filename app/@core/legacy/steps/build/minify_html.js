@@ -2,7 +2,7 @@ const fs = require("fs");
 const minify = require('html-minifier').minify;
 const path = require('path');
 const glob = require("glob");
-const l = require("../../utils/log").withContext("minify-html");
+const Log = require("../../../Log/Log");
 
 /**
  * @param {string} baseDir
@@ -19,12 +19,12 @@ module.exports = function run(baseDir, mode, firstRun) {
                         return;
                     }
 
-                    l.info("Minifying html")
+                    Log.info("Minifying HTML.");
+
                     const directory = path.join(baseDir + "/dist/**/*.php");
 
                     glob(directory, {}, function (er, files) {
                         for (const file of files) {
-                            l.info("Minifing file: " + file);
                             const data = fs.readFileSync(file).toString();
                             const minified = minify(data, {
                                 collapseWhitespace: true,
@@ -33,7 +33,6 @@ module.exports = function run(baseDir, mode, firstRun) {
                             });
 
                             fs.writeFileSync(file, minified);
-                            l.info("Wrote minified data to: " + file);
                         }
 
                         resolve();
