@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+const Bakerman = require('../../../app/Bakerman');
+new Bakerman().run();

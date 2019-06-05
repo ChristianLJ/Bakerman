@@ -1,0 +1,27 @@
+{
+  "config": {
+    "port": 7900,
+    "createWebP": true
+  },
+  "general": {
+    "srcFolder": "./src",
+    "distFolder": "./dist",
+    "stylesheet": {
+      "in": "./src/assets/styles/styles.scss",
+      "out": "./dist/styles.min.css"
+    },
+    "typescript": {
+      "in": "./src/app/app.ts",
+      "out": "./dist/app.min.js"
+    }
+  },
+  "copy": {
+    "source": "./src",
+    "distribution": "./dist"
+  },
+  "prepare": {
+    "deleteFolders": [
+      "./dist"
+    ]
+  }
+}

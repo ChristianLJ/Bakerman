@@ -1,6 +1,6 @@
 {
-  "name": "bakerman",
-  "version": "0.0.81",
+  "name": "@leicht.io/bakerman",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "deploy": "npm publish"
@@ -10,7 +10,7 @@
     "npm": ">=6.9.0"
   },
   "bin": {
-    "bakerman": "./bin/bakerman"
+    "bakerman": "./app/@core/bin/bakerman"
   },
   "repository": {
     "type": "git",
@@ -23,11 +23,13 @@
   },
   "homepage": "https://github.com/ChristianLJ/bakerman#readme",
   "dependencies": {
+    "browser-sync": "^2.26.5",
+    "fast-live-reload": "^2.8.0",
     "fs-extra": "^8.0.1",
     "gaze": "^1.1.3",
     "glob": "^7.1.4",
     "html-minifier": "^4.0.0",
-    "livereload": "^0.7.0",
+    "livereload": "^0.8.0",
     "lodash": "^4.17.11",
     "ncp": "^2.0.0",
     "node-sass": "^4.12.0",

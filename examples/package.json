@@ -1,0 +1,13 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "example:run": "node ../app/@core/bin/bakerman --dev",
+    "example:build": "node ../app/@core/bin/bakerman --prod"
+  },
+  "dependencies": {
+  }
+}
