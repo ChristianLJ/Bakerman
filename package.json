@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ChristianLJ/bakerman.git"
+    "url": "git+https://github.com/leicht-io/bakerman.git"
   },
   "author": "Christian Leicht",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ChristianLJ/bakerman/issues"
+    "url": "https://github.com/leicht-io/bakerman/issues"
   },
-  "homepage": "https://github.com/ChristianLJ/bakerman#readme",
+  "homepage": "https://github.com/leicht-io/bakerman#readme",
   "dependencies": {
     "browser-sync": "^2.26.5",
     "fast-live-reload": "^2.8.0",
