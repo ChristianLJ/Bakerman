@@ -4,11 +4,6 @@ const Log = require("../../../Log/Log");
 const write = require("../../commands/write");
 const getBuildVars = require("../../utils/get-build-vars");
 
-/**
- * @param {string} baseDir
- * @param {string} relativeFile
- * @returns {{run: () => Promise }}
- */
 module.exports = function run(baseDir, mode, firstRun) {
     return {
         run() {
@@ -30,7 +25,8 @@ module.exports = function run(baseDir, mode, firstRun) {
                         },
                         function (err, result) {
                             if (err) {
-                                reject(new Error(err.toString()));
+                                Log.error(err.formatted);
+                                process.exit(1);
                             } else {
                                 write(outFile, result.css.toString());
                                 resolve({outFile: outFile, css: result.css.toString()});

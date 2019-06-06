@@ -62,7 +62,11 @@ module.exports = function run(baseDir, mode, firstRun) {
             return new Promise((resolve, reject) => {
                 compiler.run(function (err, stats) {
                     if (err || stats.hasErrors()) {
+                        const info = stats.toJson();
+                        Log.error(info.errors);
                         reject();
+
+                        process.exit(1);
                     }
 
                     const typescript = getBuildVars().general.typescript;
@@ -72,6 +76,7 @@ module.exports = function run(baseDir, mode, firstRun) {
                         hash.sha256file(file).then(hash => {
                             fs.readdir("./dist", function (error, files) {
                                 if (error) {
+                                    Log.error("ERROR 2")
                                     reject();
                                 }
                                 resolve();
