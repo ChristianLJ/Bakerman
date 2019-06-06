@@ -1,3 +1,8 @@
+/*const chalk = require('chalk');
+const cliSpinners = require('cli-spinners');
+const ora = require('ora');
+const spinner = ora().start();
+
 class Log {
 
     static debug(message, obj) {
@@ -5,15 +10,11 @@ class Log {
     }
 
     static info(message, obj) {
-        const color = "\x1b[36m";
-
-        Log.log(message, obj, color);
+        Log.log(message, obj, chalk.cyan);
     }
 
     static alert(message, obj) {
-        const color = "\x1b[33m";
-
-        Log.log(message, obj, color);
+        Log.log(message, obj, chalk.yellow);
     }
 
     static error(message, obj) {
@@ -24,14 +25,240 @@ class Log {
         const timestamp = `[${new Date().toISOString()}] `;
 
         if (message && !obj) {
-            process.stdout.write(timestamp + message + "\n");
-            //console.log(color, timestamp + message + "\x1b[0m");
+            spinner.text = color(timestamp + message);
+
+            //process.stdout.write(color(timestamp + message) + "\n");
         } else if (message && obj) {
-            //console.log(color, timestamp + message + "\x1b[0m", obj);
-            process.stdout.write(timestamp + message + "\n");
+            //process.stdout.write(color(timestamp + message) + "\n");
         }
     }
 
 }
 
 module.exports = Log;
+*/
+const chalk = require('chalk');
+const readline = require('readline');
+const prettyError = require('./prettyError');
+const emoji = require('./emoji');
+const {countBreaks} = require('grapheme-breaker');
+const stripAnsi = require('strip-ansi');
+const ora = require('ora');
+const path = require('path');
+const fs = require('fs');
+
+class Log {
+    constructor(options) {
+        this.lines = 0;
+        this.spinner = null;
+        this.setOptions(options);
+    }
+
+    setOptions(options) {
+        this.logLevel =
+            options && isNaN(options.logLevel) === false
+                ? Number(options.logLevel)
+                : 3;
+        this.color =
+            options && typeof options.color === 'boolean'
+                ? options.color
+                : chalk.supportsColor;
+        this.emoji = (options && options.emoji) || emoji;
+        this.chalk = new chalk.constructor({enabled: this.color});
+        this.isTest =
+            options && typeof options.isTest === 'boolean'
+                ? options.isTest
+                : process.env.NODE_ENV === 'test';
+    }
+
+    countLines(message) {
+        return stripAnsi(message)
+            .split('\n')
+            .reduce((p, line) => {
+                if (process.stdout.columns) {
+                    return p + Math.ceil((line.length || 1) / process.stdout.columns);
+                }
+
+                return p + 1;
+            }, 0);
+    }
+
+    writeRaw(message) {
+        this.stopSpinner();
+
+        this.lines += this.countLines(message) - 1;
+        process.stdout.write(message);
+    }
+
+    write(message, persistent = false) {
+        if (this.logLevel > 3) {
+            return this.info(message);
+        }
+
+        if (!persistent) {
+            this.lines += this.countLines(message);
+        }
+
+        this.stopSpinner();
+        this._log(message);
+    }
+
+    info(message) {
+        let currDate = new Date();
+        message = `[${currDate.toLocaleTimeString()}]: ${message}`;
+        if (this.logLevel > 4) {
+            if (!this.logFile) {
+                this.logFile = fs.createWriteStream(
+                    path.join(
+                        process.cwd(),
+                        `parcel-debug-${currDate.toLocaleDateString()}@${currDate.toLocaleTimeString()}.log`
+                    )
+                );
+            }
+            this.logFile.write(stripAnsi(message) + '\n');
+        }
+        this._log(message);
+    }
+
+    log(message) {
+        if (this.logLevel < 3) {
+            return;
+        }
+
+        this.write(message);
+    }
+
+    persistent(message) {
+        if (this.logLevel < 3) {
+            return;
+        }
+
+        this.write(this.chalk.bold(message), true);
+    }
+
+    warn(err) {
+        if (this.logLevel < 2) {
+            return;
+        }
+
+        this._writeError(err, this.emoji.warning, this.chalk.yellow);
+    }
+
+    error(err) {
+        if (this.logLevel < 1) {
+            return;
+        }
+
+        this._writeError(err, this.emoji.error, this.chalk.red.bold);
+    }
+
+    success(message) {
+        this.log(`${this.emoji.success}  ${this.chalk.green.bold(message)}`);
+    }
+
+    formatError(err, opts) {
+        return prettyError(err, opts);
+    }
+
+    _writeError(err, emoji, color) {
+        let {message, stack} = this.formatError(err, {color: this.color});
+        this.write(color(`${emoji}  ${message}`));
+        if (stack) {
+            this.write(stack);
+        }
+    }
+
+    clear() {
+        if (!this.color || this.isTest || this.logLevel > 3) {
+            return;
+        }
+
+        while (this.lines > 0) {
+            readline.clearLine(process.stdout, 0);
+            readline.moveCursor(process.stdout, 0, -1);
+            this.lines--;
+        }
+
+        readline.cursorTo(process.stdout, 0);
+        this.stopSpinner();
+    }
+
+    progress(message) {
+        if (this.logLevel < 3) {
+            return;
+        }
+
+        if (this.logLevel > 3) {
+            return this.info(message);
+        }
+
+        let styledMessage = this.chalk.gray.bold(message);
+        if (!this.spinner) {
+            this.spinner = ora({
+                text: styledMessage,
+                stream: process.stdout,
+                enabled: this.isTest ? false : undefined // fall back to ora default unless we need to explicitly disable it.
+            }).start();
+        } else {
+            this.spinner.text = styledMessage;
+        }
+    }
+
+    stopSpinner() {
+        if (this.spinner) {
+            this.spinner.stop();
+            this.spinner = null;
+        }
+    }
+
+    handleMessage(options) {
+        this[options.method](...options.args);
+    }
+
+    _log(message) {
+        // eslint-disable-next-line no-console
+        console.log(message);
+    }
+
+    table(columns, table) {
+        // Measure column widths
+        let colWidths = [];
+        for (let row of table) {
+            let i = 0;
+            for (let item of row) {
+                colWidths[i] = Math.max(colWidths[i] || 0, stringWidth(item));
+                i++;
+            }
+        }
+
+        // Render rows
+        for (let row of table) {
+            let items = row.map((item, i) => {
+                // Add padding between columns unless the alignment is the opposite to the
+                // next column and pad to the column width.
+                let padding =
+                    !columns[i + 1] || columns[i + 1].align === columns[i].align ? 4 : 0;
+                return pad(item, colWidths[i] + padding, columns[i].align);
+            });
+
+            this.log(items.join(''));
+        }
+    }
+}
+
+// Pad a string with spaces on either side
+function pad(text, length, align = 'left') {
+    let pad = ' '.repeat(length - stringWidth(text));
+    if (align === 'right') {
+        return pad + text;
+    }
+
+    return text + pad;
+}
+
+// Count visible characters in a string
+function stringWidth(string) {
+    return countBreaks(stripAnsi('' + string));
+}
+
+module.exports = new Log();

@@ -19,7 +19,7 @@ module.exports = function run(baseDir, mode, firstRun) {
                         return;
                     }
 
-                    Log.info("Minifying HTML.");
+                    Log.progress("Minifying HTML.");
 
                     const directory = path.join(baseDir + "/dist/**/*.php");
 

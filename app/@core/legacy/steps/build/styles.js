@@ -20,7 +20,7 @@ module.exports = function run(baseDir, mode, firstRun) {
             return new Promise((resolve, reject) => {
 
                 if (mode === "DEV") {
-                    Log.info("Minifying and compiling .scss to .css in development mode with source maps.");
+                    Log.progress("Minifying and compiling .scss to .css in development mode with source maps.");
 
                     sass.render(
                         {
@@ -38,7 +38,7 @@ module.exports = function run(baseDir, mode, firstRun) {
                         }
                     );
                 } else {
-                    Log.info("Minifying and compiling .scss to .css in production mode.");
+                    Log.progress("Minifying and compiling .scss to .css in production mode.");
 
                     sass.render(
                         {

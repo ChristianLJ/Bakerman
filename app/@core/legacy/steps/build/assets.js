@@ -200,7 +200,7 @@ module.exports = function run(baseDir, mode, firstRun) {
                 });
             }
 
-            Log.info("Hashing all assets and replacing entries in project files.");
+            Log.progress("Hashing all assets and replacing entries in project files.");
 
             return getAssetDistFiles().then(assets => {
                 return calculateFileHashes(assets, ["css"])

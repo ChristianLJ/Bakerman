@@ -11,7 +11,7 @@ module.exports = function run(baseDir, mode, firstRun) {
         run() {
             const webpackMode = mode === "DEV" ? "development" : "production";
 
-            Log.info("Transpiling code base using Webpack in " + webpackMode + " mode.");
+            Log.progress("Transpiling code base using Webpack in " + webpackMode + " mode.");
 
             const productionPlugins = [];
             if (webpackMode === "production") {
@@ -25,7 +25,7 @@ module.exports = function run(baseDir, mode, firstRun) {
                         },
                     },
                 }),);*/
-                productionPlugins.push(new BundleAnalyzerPlugin());
+                productionPlugins.push(new BundleAnalyzerPlugin({logLevel: "silent"}));
             }
 
             const compiler = webpack({
@@ -62,20 +62,17 @@ module.exports = function run(baseDir, mode, firstRun) {
             return new Promise((resolve, reject) => {
                 compiler.run(function (err, stats) {
                     if (err || stats.hasErrors()) {
-                        Log.error(JSON.stringify(stats.toJson()));
-                        reject(err);
-                        return;
+                        reject();
                     }
 
                     const typescript = getBuildVars().general.typescript;
                     const file = typescript.in;
-                    const outFile = typescript.out;
 
                     new Promise((resolve1, reject1) => {
                         hash.sha256file(file).then(hash => {
                             fs.readdir("./dist", function (error, files) {
                                 if (error) {
-                                    reject(error);
+                                    reject();
                                 }
                                 resolve();
 

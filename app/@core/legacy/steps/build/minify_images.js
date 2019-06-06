@@ -70,7 +70,7 @@ function resolveAllImages(imagePromises, resolve, reject) {
 module.exports = function run(baseDir, mode, firstRun) {
     return {
         run() {
-            Log.info("Minifying images and creating webP.");
+            Log.progress("Minifying images and creating webP.");
 
             return new Promise((resolve, reject) => {
                 try {

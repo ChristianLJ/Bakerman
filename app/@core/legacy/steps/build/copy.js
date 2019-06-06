@@ -18,7 +18,7 @@ module.exports = function run(baseDir, mode, firstRun) {
                 const source = path.resolve(baseDir, config.source);
                 const target = path.resolve(baseDir, config.distribution);
 
-                Log.info("Copying assets to ./dist folder.");
+                Log.progress("Copying assets to ./dist folder.");
 
                 ncp(source, target, {filter: filter}, function (err) {
                     if (err) {

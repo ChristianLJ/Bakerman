@@ -27,13 +27,13 @@ class Pipeline {
 
         return runSteps(this.steps).then(() => {
                 if (Environment.getMode() === "PROD") {
-                    Log.alert(`Finished build for production. Elapsed time: ${new Date().getTime() - start} ms.`);
+                    Log.success(`Finished build for production. Elapsed time: ${new Date().getTime() - start} ms.`);
 
                     setTimeout(() => {
                         process.exit(0);
                     }, 1000);
                 } else {
-                    Log.alert(`Built in: ${new Date().getTime() - start}ms.`);
+                    Log.success(`Built in: ${new Date().getTime() - start}ms.`);
                 }
             }
         );

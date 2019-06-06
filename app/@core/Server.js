@@ -43,9 +43,7 @@ class Server {
                     shell: true,
                     stdio: "inherit",
                 });
-
-                Log.info("Server running at http://localhost:3000");
-
+                
                 exec('npx browser-sync start --proxy "localhost:7900" --files ' + distPath + '/**/*', (err, stdout, stderr) => {
                     if (err) {
                         l.error(err);

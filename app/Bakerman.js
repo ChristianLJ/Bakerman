@@ -20,10 +20,10 @@ class Bakerman {
         Terminal.showLogo();
 
         if (Environment.getMode() === "PROD") {
-            Log.info("Starting build process for production.");
+            Log.progress("Starting build process for production.");
             this.buildProd();
         } else {
-            Log.info("Starting server in development mode.");
+            Log.persistent("Development server running at http://localhost:3000");
             this.buildDevAndWatch();
         }
     }

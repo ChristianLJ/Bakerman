@@ -14,7 +14,7 @@ module.exports = function run(baseDir, mode, firstRun) {
 
                 const config = getBuildVars();
 
-                Log.info("Removing old ./dist folder.");
+                Log.progress("Removing old ./dist folder.");
 
                 for (const folder of config.prepare.deleteFolders) {
                     rimraf(folder, function () {
