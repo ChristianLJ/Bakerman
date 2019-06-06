@@ -6,25 +6,29 @@ const getBuildVars = require("../../utils/get-build-vars");
 const Log = require("../../../Log/Log");
 
 function minifyImage(file, mode, firstRun) {
-    const image = fs.readFileSync(file);
+    try {
+        const image = fs.readFileSync(file);
 
-    return new Promise((resolve, reject) => {
-        sharp(image)
-            .jpeg({
-                quality: 85,
-                progressive: true,
-                chromaSubsampling: '4:4:4'
-            })
-            .toBuffer(function (err, buffer) {
-                if (err) {
-                    reject(err);
-                }
+        return new Promise((resolve, reject) => {
+            sharp(image)
+                .jpeg({
+                    quality: 85,
+                    progressive: true,
+                    chromaSubsampling: '4:4:4'
+                })
+                .toBuffer(function (err, buffer) {
+                    if (err) {
+                        reject(err);
+                    }
 
-                fs.writeFileSync(file, buffer);
+                    fs.writeFileSync(file, buffer);
 
-                resolve();
-            });
-    });
+                    resolve();
+                });
+        });
+    } catch (e) {
+
+    }
 }
 
 function createWebP(file, mode) {
