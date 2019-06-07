@@ -65,8 +65,6 @@ module.exports = function run(baseDir, mode, firstRun) {
                         const info = stats.toJson();
                         Log.error(info.errors);
                         reject();
-
-                        process.exit(1);
                     }
 
                     const typescript = getBuildVars().general.typescript;

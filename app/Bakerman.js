@@ -1,6 +1,5 @@
 const prepare = require("./@core/legacy/steps/build/prepare");
 const copy = require("./@core/legacy/steps/build/copy");
-const path = require("path");
 const assets = require("./@core/legacy/steps/build/assets");
 const typescript = require("./@core/legacy/steps/build/typescript");
 const styles = require("./@core/legacy/steps/build/styles");
@@ -11,7 +10,7 @@ const Environment = require('./@core/Environment');
 const Server = require('./@core/Server');
 const Terminal = require('./@core/Terminal/Terminal');
 const Log = require('./@core/Log/Log');
-const gaze = require("gaze");
+const Watcher = require('./@core/Watcher/Watcher');
 
 let firstRun = true;
 
@@ -29,8 +28,9 @@ class Bakerman {
     }
 
     buildDevAndWatch() {
-        this.build();
-        this.watch();
+        this.build().then(() => {
+            Watcher.watch();
+        });
     }
 
     buildProd() {
@@ -41,7 +41,7 @@ class Bakerman {
         const baseDir = process.cwd();
         const mode = Environment.getMode();
 
-        new Pipeline()
+        const pipeline = new Pipeline()
             .withStep(prepare(baseDir, mode, firstRun))
             .withStep(copy(baseDir, mode, firstRun))
             .withStep(minifyImages(baseDir, mode, firstRun))
@@ -56,27 +56,9 @@ class Bakerman {
         }
 
         firstRun = false;
+
+        return pipeline;
     }
-
-    watch() {
-        //TODO: get path from config
-        const configPath = path.resolve(process.cwd(), "src");
-
-        gaze([configPath + "/**/*"], (err, watcher) => {
-            if (err) {
-                l.error(err);
-
-                process.exit(-1);
-            }
-
-            watcher.on('all', (event, filepath) => {
-                console.log("");
-
-                this.build();
-            });
-        });
-    }
-
 }
 
 module.exports = Bakerman;

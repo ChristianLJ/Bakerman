@@ -25,18 +25,23 @@ class Pipeline {
     run() {
         const start = new Date().getTime();
 
-        return runSteps(this.steps).then(() => {
-                if (Environment.getMode() === "PROD") {
-                    Log.success(`Finished build for production. Elapsed time: ${new Date().getTime() - start} ms.`);
+        return new Promise((resolve, reject) => {
+            return runSteps(this.steps).then(() => {
+                    if (Environment.getMode() === "PROD") {
+                        Log.success(`Finished build for production. Elapsed time: ${new Date().getTime() - start} ms.`);
 
-                    setTimeout(() => {
-                        process.exit(0);
-                    }, 1000);
-                } else {
-                    Log.success(`Built in: ${new Date().getTime() - start}ms.`);
+                        setTimeout(() => {
+                            process.exit(0);
+                        }, 1000);
+                    } else {
+                        Log.clear();
+                        Log.success(`Built in: ${new Date().getTime() - start}ms.`);
+                    }
+
+                    resolve();
                 }
-            }
-        );
+            );
+        });
     }
 }
 

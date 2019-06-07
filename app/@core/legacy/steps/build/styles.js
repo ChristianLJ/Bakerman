@@ -26,7 +26,6 @@ module.exports = function run(baseDir, mode, firstRun) {
                         function (err, result) {
                             if (err) {
                                 Log.error(err.formatted);
-                                process.exit(1);
                             } else {
                                 write(outFile, result.css.toString());
                                 resolve({outFile: outFile, css: result.css.toString()});

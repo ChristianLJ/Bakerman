@@ -10,7 +10,8 @@
 
 <div class="container">
     <h1>Bakerman 2!</h1>
-    <p>IS BAKING BREAD!</p>
+    <p>IS BAKING BREAD!!!!!</p>
+    <img src="./assets/images/skov.png">
 </div>
 
 <script src="app.min.js"></script>
