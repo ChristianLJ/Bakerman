@@ -32,7 +32,10 @@ module.exports = function run(baseDir, mode, firstRun) {
                                 removeEmptyAttributes: true
                             });
 
-                            fs.writeFileSync(file, minified);
+                            //TODO: Add array in config file with names on blacklisted files
+                            if(file.indexOf('sitemap') < -1 && file.indexOf("atom") < -1 && file.indexOf("rss") < -1) {
+                                fs.writeFileSync(file, minified);
+                            }
                         }
 
                         resolve();
